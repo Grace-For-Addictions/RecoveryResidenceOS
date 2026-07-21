@@ -1,0 +1,39 @@
+{
+  "curfew": {
+    "code": "GH-CURFEW-001",
+    "version": "2.0",
+    "hardCeiling": "00:00",
+    "phases": [
+      { "phase": 1, "days": "Days 1-30", "sunThu": "21:00", "friSat": "22:00" },
+      { "phase": 2, "days": "Days 31-90", "sunThu": "22:00", "friSat": "23:00" },
+      { "phase": 3, "days": "Days 91+", "sunThu": "23:00", "friSat": "00:00" }
+    ],
+    "quietHoursEnd": "07:00",
+    "extensionNoticeHours": 24,
+    "overnightPass": { "eligibleAfterDays": 60, "noticeHours": 48 },
+    "violationThresholdIn30Days": 3
+  },
+  "fees": {
+    "code": "GH-FEES-001",
+    "version": "1.0",
+    "doubleSharedRoom": { "weekly": 175, "monthlyPrepaidInFull": 650 },
+    "singlePrivateRoom": { "weekly": 200, "monthlyPrepaidInFull": 700 },
+    "monthlyRateCondition": "Monthly rates apply only when the full month is paid in advance.",
+    "depositPendingDecision": "GH-D004",
+    "refundPendingDecision": "GH-D004"
+  },
+  "contact": {
+    "code": "GH-CONTACT-001",
+    "version": "1.0",
+    "officePhone": "515-220-8771",
+    "email": "gracehouse@graceforaddictions.org",
+    "residentsWarmline": "515-310-DIAL (3425)",
+    "address": "1311 9th Street, Des Moines, Iowa 50314",
+    "operator": "Grace For Addictions, a 501(c)(3) nonprofit organization"
+  },
+  "visitor": {
+    "code": "GH-VISITOR-001",
+    "version": "1.0",
+    "minutesBeforeCurfew": 30
+  }
+}
