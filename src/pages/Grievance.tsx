@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react'
 import { residenceDb, myParticipantId } from '../lib/supabase'
+import { useResidence } from '../context/ResidenceContext'
 
 /**
  * Grievance submission with the anti-retaliation notice front and center.
  * Anonymous submission is supported (resident_id null).
  */
 export function Grievance() {
+  const { active } = useResidence()
   const [category, setCategory] = useState('house_operations')
   const [description, setDescription] = useState('')
   const [anonymous, setAnonymous] = useState(false)
@@ -18,18 +20,13 @@ export function Grievance() {
       setMessage('Not connected — please try again when you are signed in.')
       return
     }
-    const { data: residence } = await residenceDb
-      .from('residences')
-      .select('id')
-      .eq('name', 'Grace House')
-      .single()
-    if (!residence) {
+    if (!active) {
       setMessage('Could not find the residence record. Please ask a staff member for help.')
       return
     }
     const me = await myParticipantId()
     const { error } = await residenceDb.from('grievances').insert({
-      residence_id: residence.id,
+      residence_id: active.id,
       resident_id: anonymous ? null : me,
       submitted_anonymously: anonymous,
       category,

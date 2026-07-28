@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { residenceDb, myParticipantId } from '../lib/supabase'
 import { CANONICAL } from '../policy/canonical'
+import { useResidence } from '../context/ResidenceContext'
 
 const REASONS = [
   ['work', 'Work'],
@@ -19,6 +20,7 @@ const REASONS = [
  * overnight passes, eligibility after 60 days in good standing).
  */
 export function Passes() {
+  const { active } = useResidence()
   const [type, setType] = useState<'curfew_extension' | 'overnight_pass'>('curfew_extension')
   const [reason, setReason] = useState<string>('work')
   const [details, setDetails] = useState('')
@@ -34,18 +36,13 @@ export function Passes() {
       setMessage('Not connected — please try again when you are signed in.')
       return
     }
-    const { data: residence } = await residenceDb
-      .from('residences')
-      .select('id')
-      .eq('name', 'Grace House')
-      .single()
-    if (!residence) {
+    if (!active) {
       setMessage('Could not find the residence record. Please ask a staff member for help.')
       return
     }
     const me = await myParticipantId()
     const { error } = await residenceDb.from('pass_requests').insert({
-      residence_id: residence.id,
+      residence_id: active.id,
       resident_id: me,
       request_type: type,
       reason_category: reason,
