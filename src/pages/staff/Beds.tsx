@@ -60,6 +60,18 @@ export function Beds() {
     void load()
   }
 
+  async function removeBed(bed: Bed) {
+    if (!residenceDb) return
+    if (bed.resident_id || bed.status === 'occupied') {
+      toast('An occupied bed cannot be removed — discharge or reassign the resident first')
+      return
+    }
+    if (!window.confirm(`Remove ${bed.label ?? 'this bed'}? This changes the house's capacity.`)) return
+    const { error } = await residenceDb.from('beds').delete().eq('id', bed.id)
+    toast(error ? `Could not remove: ${error.message}` : `${bed.label ?? 'Bed'} removed`)
+    void load()
+  }
+
   const border: Record<string, string> = {
     occupied: 'border-pine/40 bg-gradient-to-b from-white to-[#f2f6f1]',
     available: 'border-ok/40 bg-gradient-to-b from-white to-[#eff7f1]',
@@ -82,17 +94,28 @@ export function Beds() {
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {beds.map((b) => (
-          <button
+          <div
             key={b.id}
-            onClick={() => cycle(b)}
-            className={`rounded-xl border-[1.5px] bg-white p-4 text-left transition-transform hover:-translate-y-0.5 ${border[b.status] ?? 'border-mist'}`}
+            className={`relative rounded-xl border-[1.5px] bg-white p-4 transition-transform hover:-translate-y-0.5 ${border[b.status] ?? 'border-mist'}`}
           >
-            <div className="font-serif text-lg font-bold text-pine">{b.label}</div>
-            <div className="mt-0.5 min-h-[1.1em] text-xs text-sage">
-              {b.resident_id ? `Occupied since ${b.occupied_since ?? ''}` : b.room_type}
-            </div>
-            <span className={`${tag[b.status] ?? 'tag-pine'} mt-2`}>{b.status}</span>
-          </button>
+            {!b.resident_id && b.status !== 'occupied' && (
+              <button
+                onClick={() => removeBed(b)}
+                aria-label={`Remove ${b.label ?? 'bed'}`}
+                title="Remove bed"
+                className="absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full text-sage hover:bg-bad-soft hover:text-bad"
+              >
+                ✕
+              </button>
+            )}
+            <button onClick={() => cycle(b)} className="w-full text-left">
+              <div className="font-serif text-lg font-bold text-pine">{b.label}</div>
+              <div className="mt-0.5 min-h-[1.1em] text-xs text-sage">
+                {b.resident_id ? `Occupied since ${b.occupied_since ?? ''}` : b.room_type}
+              </div>
+              <span className={`${tag[b.status] ?? 'tag-pine'} mt-2`}>{b.status}</span>
+            </button>
+          </div>
         ))}
       </div>
       {beds.length === 0 && (
@@ -101,8 +124,8 @@ export function Beds() {
         </p>
       )}
       <p className="text-xs text-sage">
-        Statuses cycle: available → reserved → cleaning → offline → available. Bed configuration
-        for Grace House is pending verification (decision GH-D003).
+        Statuses cycle: available → reserved → cleaning → offline → available. The bed table is the
+        operational source of truth for capacity; occupied beds can never be removed.
       </p>
     </div>
   )
