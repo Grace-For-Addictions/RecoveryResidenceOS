@@ -59,6 +59,19 @@ Sign-in uses Supabase Auth (password or emailed magic link); accounts are
 created by invitation during onboarding. All app routes sit behind a session,
 and Row Level Security remains the real authorization boundary.
 
+## CI
+
+- **`.github/workflows/ci.yml`** — on every push/PR: the Grace House release
+  validators (curfew ceiling, value consistency, certification language,
+  prohibited language), eslint, TypeScript, and the production build.
+- **`.github/workflows/db-migrations.yml`** — when files in
+  `supabase/migrations/` change on `main`: applies pending migrations to the
+  live project via `scripts/apply-migrations.sh`. Versions already recorded in
+  `supabase_migrations.schema_migrations` are skipped, so the job is
+  idempotent. Requires the `SUPABASE_DB_URL` repository secret (session-pooler
+  connection string with the database password). Migration filenames match the
+  versions recorded in the live database.
+
 ## Documentation
 
 - [`docs/GRACE_HOUSE_AUDIT_AND_INTEGRATION_PLAN.md`](docs/GRACE_HOUSE_AUDIT_AND_INTEGRATION_PLAN.md)

@@ -1,0 +1,32 @@
+name: Database migrations
+
+# Applies supabase/migrations/*.sql to the live Supabase project when
+# migration files change on main. Already-applied versions (recorded in
+# supabase_migrations.schema_migrations) are skipped, so the run is
+# idempotent and safe to re-trigger.
+#
+# Required repository secret:
+#   SUPABASE_DB_URL — the project's session-pooler connection string
+#   (Supabase dashboard -> Connect -> Session pooler), including the
+#   database password.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+  workflow_dispatch:
+
+concurrency:
+  group: db-migrations
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply pending migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: bash scripts/apply-migrations.sh
