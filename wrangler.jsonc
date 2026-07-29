@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers static-assets deployment for RecoveryResidenceOS.
+  // Deploy with: npm run build && npx wrangler deploy
+  // (requires a Cloudflare API token with Workers write access)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "recovery-residence-os",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./dist",
+    // client-side React Router: serve index.html for unknown paths
+    "not_found_handling": "single-page-application"
+  }
+}

@@ -1,6 +1,7 @@
-import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { SupportNow } from './SupportNow'
 import { useResidence } from '../context/ResidenceContext'
+import { useAuth } from '../context/AuthContext'
 
 const link = ({ isActive }: { isActive: boolean }) =>
   `rounded-lg px-3 py-2 text-sm font-semibold ${
@@ -9,8 +10,15 @@ const link = ({ isActive }: { isActive: boolean }) =>
 
 export function Layout() {
   const { residences, active, setActiveId } = useResidence()
+  const { session, signOut } = useAuth()
+  const navigate = useNavigate()
   const { pathname } = useLocation()
   const inStaff = pathname.startsWith('/staff')
+
+  async function handleSignOut() {
+    await signOut()
+    navigate('/')
+  }
 
   return (
     <div className="min-h-screen">
@@ -28,18 +36,29 @@ export function Layout() {
             <NavLink to="/resident/grievance" className={link}>Raise a Concern</NavLink>
             <NavLink to="/staff" className={link}>Staff</NavLink>
           </nav>
-          {residences.length > 1 && (
-            <select
-              aria-label="Switch residence"
-              className="ml-auto rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-sm font-semibold text-pine"
-              value={active?.id ?? ''}
-              onChange={(e) => setActiveId(e.target.value)}
-            >
-              {residences.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
-          )}
+          <div className="ml-auto flex items-center gap-2">
+            {residences.length > 1 && (
+              <select
+                aria-label="Switch residence"
+                className="rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-sm font-semibold text-pine"
+                value={active?.id ?? ''}
+                onChange={(e) => setActiveId(e.target.value)}
+              >
+                {residences.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            )}
+            {session && (
+              <button
+                onClick={handleSignOut}
+                className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-sage hover:bg-stone-100"
+                title={session.user.email ?? undefined}
+              >
+                Sign out
+              </button>
+            )}
+          </div>
         </div>
         {inStaff && (
           <div className="border-t border-mist bg-[#fafbf8]">

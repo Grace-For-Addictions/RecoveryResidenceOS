@@ -42,6 +42,23 @@ npm run check      # all of the above
 
 Copy `.env.example` to `.env` for local development (publishable values only).
 
+## Deployment (Cloudflare)
+
+The app ships as a Cloudflare Workers static-assets site (`wrangler.jsonc`, SPA
+routing enabled). Two ways to deploy:
+
+1. **Git-connected (recommended):** create a Workers project in the Cloudflare
+   dashboard connected to this repo — build command `npm run build`, assets
+   directory `dist`, and set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`
+   as build variables.
+2. **CLI:** `npm run deploy` (runs the full quality gate, then
+   `wrangler deploy`; requires `CLOUDFLARE_API_TOKEN` with Workers write
+   access).
+
+Sign-in uses Supabase Auth (password or emailed magic link); accounts are
+created by invitation during onboarding. All app routes sit behind a session,
+and Row Level Security remains the real authorization boundary.
+
 ## Documentation
 
 - [`docs/GRACE_HOUSE_AUDIT_AND_INTEGRATION_PLAN.md`](docs/GRACE_HOUSE_AUDIT_AND_INTEGRATION_PLAN.md)

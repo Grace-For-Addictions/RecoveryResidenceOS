@@ -22,8 +22,8 @@ export function Landing() {
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gold text-pine-deep">⌂</span>
           Recovery Residence
         </div>
-        <Link to="/resident" className="btn border border-cream/30 bg-cream/10 text-cream hover:bg-cream/20">
-          Enter the app
+        <Link to="/signin" className="btn border border-cream/30 bg-cream/10 text-cream hover:bg-cream/20">
+          Sign in
         </Link>
       </nav>
       <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 py-10 sm:px-10 lg:grid-cols-2">

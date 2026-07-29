@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint src scripts",
     "validate": "node scripts/validate.mjs",
-    "check": "npm run validate && npm run lint && npm run build"
+    "check": "npm run validate && npm run lint && npm run build",
+    "deploy": "npm run check && wrangler deploy"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
@@ -28,6 +29,7 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.19.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "wrangler": "^4.0.0"
   }
 }
