@@ -64,6 +64,7 @@ export function Layout() {
           <div className="border-t border-mist bg-[#fafbf8]">
             <nav className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2" aria-label="Staff">
               <NavLink to="/staff" end className={link}>Dashboard</NavLink>
+              <NavLink to="/staff/applications" className={link}>Applications</NavLink>
               <NavLink to="/staff/beds" className={link}>Beds</NavLink>
               <NavLink to="/staff/waitlist" className={link}>Waitlist</NavLink>
               <NavLink to="/staff/passes" className={link}>Passes</NavLink>

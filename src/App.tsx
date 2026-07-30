@@ -5,6 +5,11 @@ import { Layout } from './components/Layout'
 import { RequireAuth } from './components/RequireAuth'
 import { Landing } from './pages/Landing'
 import { SignIn } from './pages/SignIn'
+import { DirectoryHome } from './pages/directory/DirectoryHome'
+import { GraceHouseProfile } from './pages/directory/GraceHouseProfile'
+import { EjwrhProfile, JerrysProfile } from './pages/directory/ResidenceProfiles'
+import { ApplyGraceHouse } from './pages/directory/ApplyGraceHouse'
+import { Applications } from './pages/staff/Applications'
 import { ResidentHome } from './pages/ResidentHome'
 import { CheckIn } from './pages/CheckIn'
 import { Passes } from './pages/Passes'
@@ -24,7 +29,12 @@ export default function App() {
       <ResidenceProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<DirectoryHome />} />
+            <Route path="/platform" element={<Landing />} />
+            <Route path="/residences/grace-house" element={<GraceHouseProfile />} />
+            <Route path="/residences/ejwrh" element={<EjwrhProfile />} />
+            <Route path="/residences/jerrys-house" element={<JerrysProfile />} />
+            <Route path="/apply/grace-house" element={<ApplyGraceHouse />} />
             <Route path="/signin" element={<SignIn />} />
             <Route element={<RequireAuth />}>
               <Route element={<Layout />}>
@@ -34,6 +44,7 @@ export default function App() {
                 <Route path="/resident/grievance" element={<Grievance />} />
                 <Route path="/resident/documents" element={<Documents />} />
                 <Route path="/staff" element={<Dashboard />} />
+                <Route path="/staff/applications" element={<Applications />} />
                 <Route path="/staff/beds" element={<Beds />} />
                 <Route path="/staff/waitlist" element={<Waitlist />} />
                 <Route path="/staff/passes" element={<PassQueue />} />
