@@ -72,3 +72,33 @@ projection:
 
 No canonical data migration has been performed; P2 is prepared, not executed
 (`GFA-ECO/docs/migration/p2-canonical-migration-plan.md`).
+
+## P2 update (2026-08-07) — canonical shadow domain now exists
+
+The canonical RecoveryOS coaching domain has been built additively in GFA-ECO
+(`recoveryos.*`, CANONICAL_SHADOW stage; migrations 0025–0028). The residence
+Support-Team surface, when built, is a **projection of these canonical tables** —
+never a residence-local copy:
+
+- **Relationship:** read `recoveryos.coaching_relationships`
+  (extended with status/is_primary/assignment_source; one active primary per
+  participant). Not `v2_profiles.coach_id`, not `assigned_coach_email`.
+- **Sessions:** read `recoveryos.appointments` (extended with modality,
+  meeting_url, timezone, confirm/cancel/reschedule + booking/support links). The
+  identical appointment the participant sees in VRCC — no residential duplicate.
+- **Messaging:** `recoveryos.conversations`/`conversation_members`/`messages` —
+  **membership-scoped**. Residence staff are NOT auto-members; they get no
+  coach–participant message content. Operational metadata (has coach, next
+  session where authorized, follow-up status) flows through consent- and
+  role-scoped reads only (`recoveryos.is_admin_staff()` / future residence-scoped
+  views), never table-wide participant reads.
+- **Do NOT create** `residence_coach_assignments`, `residence_sessions`, or
+  `residence_messages`. Recovery Residence is another authorized projection of the
+  same relationship/session/conversation rows (ADR-0014 one-platform-multi-domain).
+
+Frontend/RPC contracts the residence projection will consume:
+`GFA-ECO/docs/architecture/canonical-coaching-frontend-contracts.md`.
+Full P2 report: `GFA-ECO/docs/migration/p2-canonical-foundation-report.md`.
+
+No canonical read/write cutover has occurred (CANONICAL_SHADOW). No change was
+made in this repo — the contract is recorded for the Phase-6 residence projection.
