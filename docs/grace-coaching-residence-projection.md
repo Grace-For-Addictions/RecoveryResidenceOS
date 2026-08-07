@@ -132,3 +132,16 @@ Still unchanged for this repo: do NOT build against `v2_profiles.coach_id` /
 `assigned_coach_email`; do NOT create `residence_coach_assignments` / `residence_sessions` /
 `residence_messages`; residence is another authorized projection of the same canonical rows
 (ADR-0014). Full P3C detail: `GFA-ECO/docs/migration/p3c-canonical-write-authority-report.md`.
+
+## P3C-B update (2026-08-07) — scheduling write domain prepared (no production flip)
+
+Canonical booking→appointment write machinery, canonical in-app notification generation, and a
+CRITICAL scheduling-compat outbox are now built and DB-verified (fixtures, rolled back); a gated
+canary consumer + authenticated-HTTP test harness are in place. **No production domain was flipped
+to canonical write** (blocked on authenticated HTTP to `*.supabase.co`; the canary run is the gate).
+For the future residence Support-Team surface this firms up the read/write contract it will consume —
+`recoveryos.appointments` remains the single scheduled-session entity (participant + coach see the
+identical appointment; residence would be one more authorized projection, never a residence-local
+`residence_sessions`), and canonical notifications are in-app only with external delivery OFF and
+fixtures excluded. Still nothing to build in this repo. Full detail:
+`GFA-ECO/docs/migration/p3c-b-scheduling-canary-report.md`.
