@@ -102,3 +102,33 @@ Full P2 report: `GFA-ECO/docs/migration/p2-canonical-foundation-report.md`.
 
 No canonical read/write cutover has occurred (CANONICAL_SHADOW). No change was
 made in this repo — the contract is recorded for the Phase-6 residence projection.
+
+## P3B/P3C-A update (2026-08-07) — canonical is now read-authoritative; write authority prepared
+
+Two GFA-ECO milestones since P2; **still nothing to build here yet**, but the contract
+the residence Support-Team surface will consume is now more concrete:
+
+- **P3B — canonical READ authority (CANONICAL_READ).** A typed, RLS-scoped, fixture-aware
+  read service (`packages/data-access/src/repositories/coachingReads.ts`) is now the trusted
+  read layer over `recoveryos.*`, kept live-synced by one-way v2→canonical projection. **This
+  is the exact layer the residence projection reads** — `getMyCoach`, `getMyParticipants`,
+  `getMyUpcomingAppointments`, membership-scoped conversations — never a residence-local copy,
+  never `v2_*`.
+- **P3C-A — canonical WRITE authority machinery (prepared, not flipped).** A per-domain
+  write-authority switch now exists so `recoveryos` can become the authoritative writer one
+  domain at a time, with a structurally-guaranteed single write direction (no circular sync).
+  Verified with test fixtures, rolled back. **No live domain was flipped to canonical write**
+  (awaits HTTP verification / a real consumer). Relationships and support requests are first in
+  line; booking+appointments (P3C-B), notifications, messaging, and reminders follow behind their
+  own gates.
+
+**Fixture safety (relevant to residence metrics):** four demo accounts (`@vrcc-v2.test`) are
+first-class `test_fixture` records, excluded from coach lists, the support-request pool, and
+external delivery. When the residence Support-Team surface is built, it inherits this exclusion —
+**test fixtures must never appear as real coaches, receive real participants, or enter residence
+operational reporting.**
+
+Still unchanged for this repo: do NOT build against `v2_profiles.coach_id` /
+`assigned_coach_email`; do NOT create `residence_coach_assignments` / `residence_sessions` /
+`residence_messages`; residence is another authorized projection of the same canonical rows
+(ADR-0014). Full P3C detail: `GFA-ECO/docs/migration/p3c-canonical-write-authority-report.md`.
